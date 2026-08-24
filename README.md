@@ -4,21 +4,25 @@
 
 Projekt se bavi automatskom klasifikacijom proizvoda u odgovarajuće kategorije na temelju naziva proizvoda.
 
-Za pretvaranje tekstualnih podataka u numerički oblik korišten je TF-IDF, a testirana su tri klasifikacijska modela:
+Cilj projekta je razviti model mašinskog učenja koji može automatski predvidjeti kategoriju novog proizvoda na temelju njegovog naziva.
+
+U projektu su testirana tri klasifikacijska modela:
 
 - Logistic Regression
 - Linear SVM
 - Naive Bayes
 
-Cilj projekta je pronaći model koji može što preciznije predvidjeti kategoriju proizvoda na temelju njegovog naziva.
+Za pretvaranje tekstualnih podataka u numerički oblik korišten je TF-IDF.
 
 ## Podaci
 
-Korišten je dataset koji sadrži 35.096 proizvoda raspoređenih u 10 standardiziranih kategorija.
+Korišten je dataset s 35.311 proizvoda.
 
-Dataset se nalazi u:
+Nakon čišćenja podataka ostalo je 35.096 proizvoda.
 
-data/IMLP6_TASK_03-products.csv
+Dataset se nalazi u `data/IMLP6_TASK_03-products.csv`.
+
+Ciljna varijabla je `Category Label`, a ulazna varijabla je `Product Title`.
 
 ## Korištene tehnologije
 
@@ -32,136 +36,131 @@ data/IMLP6_TASK_03-products.csv
 - TF-IDF
 - Linear SVM
 
+## Analiza i razvoj modela
+
+U Jupyter Notebooku provedene su sljedeće faze:
+
+- učitavanje podataka
+- istraživanje strukture dataseta
+- provjera nedostajućih vrijednosti
+- čišćenje podataka
+- analiza kategorija proizvoda
+- analiza naziva proizvoda
+- analiza duljine naziva i broja riječi
+- TF-IDF vektorizacija
+- podjela podataka na trening i test skup
+- treniranje više klasifikacijskih modela
+- evaluacija modela
+- usporedba rezultata
+- confusion matrix
+- odabir najboljeg modela
+
 ## Rezultati modela
 
-Testirana su tri klasifikacijska modela:
+U eksperimentalnoj Jupyter Notebook analizi testirana su tri modela:
 
 | Model | Accuracy |
-|---|---:|
+| --- | ---: |
 | Logistic Regression | 95.61% |
 | Linear SVM | 96.50% |
 | Naive Bayes | 94.86% |
 
-Najbolji rezultat u Jupyter Notebook analizi ostvario je Linear SVM s točnošću od 96.50%.
+Najbolji rezultat u eksperimentalnoj analizi ostvario je Linear SVM s accuracy rezultatom od 96.50%.
 
-Završna skripta za treniranje modela ostvaruje accuracy od 95.84%.
+Nakon toga izrađena je završna verzija skripte za treniranje modela. Završni `train_model.py` ostvaruje accuracy od 95.84%.
+
+Razlika u rezultatu posljedica je različitih postavki TF-IDF vektorizacije između eksperimentalnog notebooka i završne skripte.
+
+## Završni model
+
+Kao završni klasifikacijski algoritam koristi se Linear SVM.
+
+Završna skripta `train_model.py` trenira model na podacima i sprema:
+
+- `model.pkl`
+- `vectorizer.pkl`
+
+Model i vektorizator mogu se ponovno učitati bez ponovnog treniranja.
 
 ## Struktura projekta
 
-product-category-classification/
+- `data/` — dataset korišten za treniranje
+- `notebooks/` — Jupyter Notebook s kompletnom analizom
+- `train_model.py` — skripta za treniranje i spremanje modela
+- `predict_category.py` — skripta za interaktivno predviđanje kategorije
+- `model.pkl` — spremljeni Linear SVM model
+- `vectorizer.pkl` — spremljeni TF-IDF vektorizator
+- `.gitignore` — datoteke koje se ne spremaju u Git
+- `README.md` — dokumentacija projekta
 
-├── data/
+## Instalacija
 
-│   └── IMLP6_TASK_03-products.csv
+Potrebno je imati instaliran Python.
 
-├── notebooks/
+Potrebne biblioteke:
 
-│   └── product_category_classification.ipynb
+- pandas
+- scikit-learn
+- joblib
+- matplotlib
+- seaborn
 
-├── train_model.py
-
-├── predict_category.py
-
-├── model.pkl
-
-├── vectorizer.pkl
-
-└── README.md
-
-## Analiza podataka
-
-U početnoj fazi učitani su podaci i provedeno je čišćenje podataka.
-
-Provjereni su nazivi stupaca, nedostajuće vrijednosti i struktura dataseta.
-
-Nakon čišćenja dataset sadrži 35.096 proizvoda.
-
-## TF-IDF vektorizacija
-
-Budući da su ulazni podaci tekstualni, nazivi proizvoda pretvoreni su u numerički oblik pomoću TF-IDF vektorizacije.
-
-TF-IDF omogućuje modelu da prepozna važne riječi i izraze u nazivima proizvoda.
+Biblioteke se mogu instalirati naredbom `pip install pandas scikit-learn joblib matplotlib seaborn`.
 
 ## Treniranje modela
 
-Podaci su podijeljeni na trening i test skup.
+Za treniranje završnog modela pokrenuti `python train_model.py`.
 
-Za završni model korišten je Linear SVM.
+Skripta:
 
-Model se trenira pomoću skripte:
+1. učitava dataset
+2. čisti podatke
+3. priprema tekstualne podatke
+4. dijeli podatke na trening i test skup
+5. primjenjuje TF-IDF
+6. trenira Linear SVM
+7. izračunava accuracy
+8. sprema model u `model.pkl`
+9. sprema TF-IDF vektorizator u `vectorizer.pkl`
 
-python train_model.py
+Završna skripta ostvaruje accuracy od približno 95.84%.
 
-Nakon treniranja stvaraju se:
+## Interaktivno predviđanje
 
-- model.pkl
-- vectorizer.pkl
-
-## Evaluacija
-
-Linear SVM je u završnoj skripti ostvario accuracy od 95.84%.
-
-Model je uspješno testiran na novim nazivima proizvoda.
-
-Primjer:
-
-samsung galaxy s24 256gb
-
-Predviđena kategorija: Mobile Phones
-
-## Pokretanje projekta
-
-### Instalacija potrebnih biblioteka
-
-U terminalu instalirati potrebne biblioteke:
-
-pip install pandas scikit-learn joblib matplotlib seaborn
-
-### Treniranje modela
-
-Pokrenuti:
-
-python train_model.py
-
-### Interaktivno testiranje
-
-Pokrenuti:
-
-python predict_category.py
+Za testiranje spremljenog modela pokrenuti `python predict_category.py`.
 
 Program omogućuje unos naziva proizvoda i vraća predviđenu kategoriju.
 
-Za završetak programa upisati:
+Primjer:
 
-exit
+**Unos:** samsung galaxy s24 256gb
+
+**Predviđena kategorija:** Mobile Phones
+
+Za završetak programa upisati `exit`.
 
 ## Jupyter Notebook
 
-Kompletna analiza i razvoj modela prikazani su u:
+Kompletna analiza i razvoj modela nalaze se u `notebooks/product_category_classification.ipynb`.
 
-notebooks/product_category_classification.ipynb
+Notebook prikazuje proces od istraživanja i čišćenja podataka do treniranja, evaluacije i usporedbe više modela.
 
-Notebook sadrži:
+## Evaluacija
 
-- učitavanje podataka
-- čišćenje podataka
-- pripremu tekstualnih podataka
-- TF-IDF vektorizaciju
-- podjelu podataka na trening i test skup
-- treniranje više modela
-- evaluaciju modela
-- usporedbu rezultata
-- confusion matrix
-- odabir najboljeg modela
+Modeli su uspoređeni pomoću accuracy metrike, classification reporta i confusion matrixa.
+
+Confusion matrix omogućuje pregled kategorija između kojih model najčešće griješi.
+
+Veći broj pogrešaka očekivan je između semantički sličnih kategorija proizvoda.
 
 ## Zaključak
 
-U projektu je razvijen model za automatsku klasifikaciju proizvoda prema njihovom nazivu.
+U projektu je razvijen sustav za automatsku klasifikaciju proizvoda prema njihovom nazivu.
 
-U Jupyter Notebook analizi najbolji rezultat ostvario je Linear SVM s accuracy rezultatom od 96.50%.
+Testirana su tri različita klasifikacijska algoritma, pri čemu je Linear SVM ostvario najbolji rezultat u eksperimentalnoj analizi.
 
-Završna skripta za treniranje uspješno trenira Linear SVM i sprema model u model.pkl te TF-IDF vektorizator u vectorizer.pkl.
+Završna skripta `train_model.py` uspješno trenira Linear SVM model i sprema ga u `model.pkl`, zajedno s TF-IDF vektorizatorom u `vectorizer.pkl`.
 
-Skripta predict_category.py omogućuje interaktivno predviđanje kategorije novih proizvoda.
+Skripta `predict_category.py` omogućuje interaktivno predviđanje kategorije novih proizvoda.
 
-Projekt je organiziran tako da drugi član tima može pregledati analizu, ponovno trenirati model i koristiti ga za klasifikaciju novih proizvoda.
+Projekt je organiziran tako da drugi član tima može pregledati analizu, ponovno trenirati model ili koristiti postojeći model za klasifikaciju novih proizvoda.
