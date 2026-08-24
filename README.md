@@ -42,9 +42,9 @@ Testirana su tri klasifikacijska modela:
 | Linear SVM | 96.50% |
 | Naive Bayes | 94.86% |
 
-Najbolji rezultat ostvario je Linear SVM s točnošću od 96.50%.
+Najbolji rezultat u Jupyter Notebook analizi ostvario je Linear SVM s točnošću od 96.50%.
 
-Na temelju rezultata Linear SVM odabran je kao završni model za klasifikaciju novih proizvoda.
+Završna skripta za treniranje modela ostvaruje accuracy od 95.84%.
 
 ## Struktura projekta
 
@@ -62,9 +62,9 @@ product-category-classification/
 
 ├── predict_category.py
 
-├── model.joblib
+├── model.pkl
 
-├── vectorizer.joblib
+├── vectorizer.pkl
 
 └── README.md
 
@@ -74,7 +74,7 @@ U početnoj fazi učitani su podaci i provedeno je čišćenje podataka.
 
 Provjereni su nazivi stupaca, nedostajuće vrijednosti i struktura dataseta.
 
-Nakon čišćenja dataset je korišten za treniranje klasifikacijskih modela.
+Nakon čišćenja dataset sadrži 35.096 proizvoda.
 
 ## TF-IDF vektorizacija
 
@@ -86,62 +86,50 @@ TF-IDF omogućuje modelu da prepozna važne riječi i izraze u nazivima proizvod
 
 Podaci su podijeljeni na trening i test skup.
 
-Testirana su tri modela:
+Za završni model korišten je Linear SVM.
 
-- Logistic Regression
-- Linear SVM
-- Naive Bayes
+Model se trenira pomoću skripte:
 
-Svaki model je evaluiran pomoću accuracy metrike i classification reporta.
+python train_model.py
+
+Nakon treniranja stvaraju se:
+
+- model.pkl
+- vectorizer.pkl
 
 ## Evaluacija
 
-Linear SVM ostvario je najbolji rezultat:
+Linear SVM je u završnoj skripti ostvario accuracy od 95.84%.
 
-Accuracy: 96.50%
+Model je uspješno testiran na novim nazivima proizvoda.
 
-Confusion matrix pokazuje da model vrlo dobro razlikuje većinu kategorija.
+Primjer:
 
-Najviše pogrešaka pojavljuje se između međusobno sličnih kategorija, posebno između:
+samsung galaxy s24 256gb
 
-- Fridges
-- Freezers
-- Fridge Freezers
-
-To je očekivano jer se radi o semantički sličnim kategorijama proizvoda.
+Predviđena kategorija: Mobile Phones
 
 ## Pokretanje projekta
 
-### 1. Instalacija potrebnih biblioteka
+### Instalacija potrebnih biblioteka
 
 U terminalu instalirati potrebne biblioteke:
 
 pip install pandas scikit-learn joblib matplotlib seaborn
 
-### 2. Treniranje modela
+### Treniranje modela
 
-Za treniranje modela pokrenuti:
+Pokrenuti:
 
 python train_model.py
 
-Skripta trenira Linear SVM model i sprema:
+### Interaktivno testiranje
 
-- model.joblib
-- vectorizer.joblib
-
-### 3. Interaktivno testiranje modela
-
-Za testiranje modela pokrenuti:
+Pokrenuti:
 
 python predict_category.py
 
 Program omogućuje unos naziva proizvoda i vraća predviđenu kategoriju.
-
-Primjer:
-
-Naziv proizvoda: samsung galaxy s24 256gb
-
-Predviđena kategorija: Mobile Phones
 
 Za završetak programa upisati:
 
@@ -149,7 +137,7 @@ exit
 
 ## Jupyter Notebook
 
-Kompletna analiza i razvoj modela prikazani su u Jupyter Notebooku:
+Kompletna analiza i razvoj modela prikazani su u:
 
 notebooks/product_category_classification.ipynb
 
@@ -160,20 +148,20 @@ Notebook sadrži:
 - pripremu tekstualnih podataka
 - TF-IDF vektorizaciju
 - podjelu podataka na trening i test skup
-- treniranje modela
+- treniranje više modela
 - evaluaciju modela
 - usporedbu rezultata
-- prikaz confusion matrixa
+- confusion matrix
 - odabir najboljeg modela
 
 ## Zaključak
 
 U projektu je razvijen model za automatsku klasifikaciju proizvoda prema njihovom nazivu.
 
-Od tri testirana modela najbolji rezultat ostvario je Linear SVM s točnošću od 96.50%.
+U Jupyter Notebook analizi najbolji rezultat ostvario je Linear SVM s accuracy rezultatom od 96.50%.
 
-Model je spremljen u datoteku model.joblib, dok je TF-IDF vektorizator spremljen u vectorizer.joblib.
+Završna skripta za treniranje uspješno trenira Linear SVM i sprema model u model.pkl te TF-IDF vektorizator u vectorizer.pkl.
 
-Pomoću skripte predict_category.py moguće je interaktivno unositi nove proizvode i dobiti njihovu predviđenu kategoriju.
+Skripta predict_category.py omogućuje interaktivno predviđanje kategorije novih proizvoda.
 
-Projekt je organiziran tako da se analiza može pregledati kroz Jupyter Notebook, model ponovno trenirati pomoću train_model.py, a gotov model testirati pomoću predict_category.py.
+Projekt je organiziran tako da drugi član tima može pregledati analizu, ponovno trenirati model i koristiti ga za klasifikaciju novih proizvoda.

@@ -1,14 +1,11 @@
 import joblib
 
-
-# Učitavanje spremljenog modela i TF-IDF vektorizatora
-model = joblib.load("model.joblib")
-vectorizer = joblib.load("vectorizer.joblib")
-
+# Učitavanje treniranog modela i TF-IDF vektorizatora
+model = joblib.load("model.pkl")
+vectorizer = joblib.load("vectorizer.pkl")
 
 print("Model za klasifikaciju proizvoda")
 print("Upiši naziv proizvoda ili 'exit' za izlaz.\n")
-
 
 while True:
     product_title = input("Naziv proizvoda: ")

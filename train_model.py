@@ -7,43 +7,84 @@ from sklearn.svm import LinearSVC
 from sklearn.metrics import accuracy_score
 
 
-# 1. Učitavanje podataka
+# ============================================================
+# 1. UČITAVANJE PODATAKA
+# ============================================================
+
 df = pd.read_csv("data/IMLP6_TASK_03-products.csv")
 
-# 2. Standardizacija naziva stupaca
+# Uklanjanje razmaka iz naziva stupaca
 df.columns = df.columns.str.strip()
 
-# 3. Čišćenje podataka
+print("Stupci u datasetu:")
+print(df.columns.tolist())
+
+print(f"\nBroj redaka prije čišćenja: {len(df)}")
+
+
+# ============================================================
+# 2. ODABIR STUPACA
+# ============================================================
+
+title_column = "Product Title"
+category_column = "Category Label"
+
+
+# Provjera postoje li potrebni stupci
+if title_column not in df.columns:
+    raise ValueError(
+        f"Nedostaje stupac '{title_column}'. "
+        f"Dostupni stupci: {df.columns.tolist()}"
+    )
+
+if category_column not in df.columns:
+    raise ValueError(
+        f"Nedostaje stupac '{category_column}'. "
+        f"Dostupni stupci: {df.columns.tolist()}"
+    )
+
+
+# ============================================================
+# 3. ČIŠĆENJE PODATAKA
+# ============================================================
+
 df_clean = df.dropna(
-    subset=["Product Title", "Category Label"]
+    subset=[title_column, category_column]
 ).copy()
 
-# 4. Standardizacija kategorija
-df_clean["Category Label"] = (
-    df_clean["Category Label"]
+df_clean[title_column] = (
+    df_clean[title_column]
     .astype(str)
     .str.strip()
 )
 
-category_mapping = {
-    "Fridge": "Fridges",
-    "fridge": "Fridges",
-    "Freezer": "Freezers",
-    "freezer": "Freezers",
-    "Fridge Freezer": "Fridge Freezers",
-    "fridge freezer": "Fridge Freezers",
-}
-
-df_clean["Category Label"] = (
-    df_clean["Category Label"]
-    .replace(category_mapping)
+df_clean[category_column] = (
+    df_clean[category_column]
+    .astype(str)
+    .str.strip()
 )
 
-# 5. Ulazni podaci i ciljna varijabla
-X = df_clean["Product Title"].astype(str)
-y = df_clean["Category Label"]
+# Uklanjanje praznih vrijednosti
+df_clean = df_clean[
+    (df_clean[title_column] != "") &
+    (df_clean[category_column] != "")
+].copy()
 
-# 6. Podjela na trening i test skup
+print(f"Broj redaka nakon čišćenja: {len(df_clean)}")
+
+
+# ============================================================
+# 4. X I y
+# ============================================================
+
+X = df_clean[title_column]
+y = df_clean[category_column]
+
+
+# ============================================================
+# 5. TRAIN / TEST PODJELA
+# ============================================================
+
 X_train, X_test, y_train, y_test = train_test_split(
     X,
     y,
@@ -52,30 +93,56 @@ X_train, X_test, y_train, y_test = train_test_split(
     stratify=y
 )
 
-# 7. TF-IDF
+
+# ============================================================
+# 6. TF-IDF
+# ============================================================
+
 vectorizer = TfidfVectorizer(
     lowercase=True,
-    ngram_range=(1, 2)
+    ngram_range=(1, 2),
+    min_df=2,
+    max_df=0.95
 )
 
 X_train_tfidf = vectorizer.fit_transform(X_train)
 X_test_tfidf = vectorizer.transform(X_test)
 
-# 8. Treniranje najboljeg modela
-model = LinearSVC()
 
-model.fit(X_train_tfidf, y_train)
+# ============================================================
+# 7. LINEAR SVM
+# ============================================================
 
-# 9. Provjera točnosti
+model = LinearSVC(
+    random_state=42
+)
+
+model.fit(
+    X_train_tfidf,
+    y_train
+)
+
+
+# ============================================================
+# 8. EVALUACIJA
+# ============================================================
+
 y_pred = model.predict(X_test_tfidf)
 
-accuracy = accuracy_score(y_test, y_pred)
+accuracy = accuracy_score(
+    y_test,
+    y_pred
+)
 
-print(f"Linear SVM accuracy: {accuracy:.4f}")
+print(f"\nLinear SVM accuracy: {accuracy:.4f}")
 
-# 10. Spremanje modela i TF-IDF vektorizatora
-joblib.dump(model, "model.joblib")
-joblib.dump(vectorizer, "vectorizer.joblib")
 
-print("Model spremljen kao model.joblib")
-print("TF-IDF vektorizator spremljen kao vectorizer.joblib")
+# ============================================================
+# 9. Spremanje modela i TF-IDF vektorizatora
+joblib.dump(model, "model.pkl")
+joblib.dump(vectorizer, "vectorizer.pkl")
+
+print("\nModel spremljen kao model.pkl")
+print("TF-IDF vektorizator spremljen kao vectorizer.pkl")
+
+print("\nTreniranje modela uspješno završeno.")
